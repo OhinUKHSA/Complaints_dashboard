@@ -136,18 +136,18 @@ function(input, output, session) {
     
     # Build a Date-valued x column + label for ticks
     if (input$DateAggregate == "Month") {
-      # Month is tsibble::yearmonth -> coerce to first-of-month Date
+      
       dat <- dat %>%
         mutate(
           .x_date = as.Date(Month),
           .x_lab  = format(.x_date, "%b %Y")
         )
     } else if (input$DateAggregate == "FY_qtr") {
-      # FY_qtr is tsibble::yearquarter -> first day of quarter as Date
+      
       dat <- dat %>%
         mutate(
           .x_date = as.Date(FY_qtr),
-          .x_lab  = as.character(FY_qtr)  # e.g. "2024 Q2"
+          .x_lab  = paste0("Q", quarter(FY_qtr, fiscal_start = 4), ' ', year(FY_qtr) %% 100, '/', year(FY_qtr) %% 100 + 1)  # e.g. "2024 Q2"
         )
     } else if (input$DateAggregate == "FY_year") {
       # Map FY start year to 01-Apr of that year
@@ -170,7 +170,7 @@ function(input, output, session) {
       geom_text(
         aes(label = ifelse(count == 0, "", count)),
         position = position_stack(vjust = 0.5),
-        colour = "black", size = 3, show.legend = FALSE
+        colour = "black", size = input$textsize, show.legend = FALSE
       ) +
       scale_fill_manual(values = af_main12(), drop = FALSE) +
       scale_x_date(breaks = breaks_tbl$.x_date, labels = breaks_tbl$.x_lab) +
@@ -249,7 +249,7 @@ function(input, output, session) {
       dat <- dat %>%
         mutate(
           .x_date = as.Date(FY_qtr),                # tsibble::yearquarter -> first day of quarter
-          .x_lab  = as.character(FY_qtr)            # e.g. "2024 Q2"
+          .x_lab  = paste0("Q", quarter(FY_qtr), ' ', year(FY_qtr) %% 100, '/', year(FY_qtr) %% 100 + 1)            # e.g. "2024 Q2"
         )
     } else if (input$DateAggregate == "FY_year") {
       dat <- dat %>%
@@ -272,7 +272,7 @@ function(input, output, session) {
       geom_text(
         aes(label = ifelse(percent == 0, "", paste0(percent, "%"))),
         vjust = -0.4,
-        size = 3,
+        size = input$textsize,
         show.legend = FALSE
       ) +
       scale_x_date(breaks = breaks_tbl$.x_date, labels = breaks_tbl$.x_lab) +

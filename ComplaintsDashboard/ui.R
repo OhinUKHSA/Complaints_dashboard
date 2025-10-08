@@ -86,6 +86,7 @@ fluidPage(
                                 width = '800px'),
                       textInput('captionTitle',  'Caption Title:', value = '',
                                 width = '800px'))),
+      numericInput('textsize', 'plot label text size:', min = 1, max = 15, value = 5, step = 1),
       hr(),
       tags$h2('Choose analysis'),
       tags$p('Toggle between the different tabs to view different analyses'),
